@@ -1,5 +1,6 @@
 {
   "name": "funiko-game",
+  "description": "Funiko Game - Tebak Gambar Hewan",
   "private": true,
   "version": "1.0.0",
   "type": "module",
