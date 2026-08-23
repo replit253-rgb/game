@@ -1,0 +1,8 @@
+{
+  "name": "Funiko Game",
+  "description": "Game edukatif tebak gambar hewan interaktif dengan sistem drag & drop, nyawa, level, dan efek suara asli.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
