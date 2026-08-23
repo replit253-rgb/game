@@ -59,6 +59,67 @@ export const MainMenu: React.FC<MainMenuProps> = ({
         className="fixed inset-0 w-full h-full object-cover pointer-events-none filter brightness-95"
       />
 
+      {/* Decorative & Interactive Animal Pictures on Main Page */}
+      {/* Left Animal: Beruang */}
+      <div 
+        onClick={() => soundFx.play('pop')}
+        className="fixed left-1 xs:left-3 sm:left-6 md:left-10 lg:left-16 bottom-2 sm:bottom-6 z-10 w-20 xs:w-28 sm:w-40 md:w-48 lg:w-56 cursor-pointer group transition-transform duration-300 hover:scale-110 active:scale-95 animate-float pointer-events-auto"
+        title="Halo! Ketuk aku!"
+      >
+        <img
+          src="/assets/Object/Beruang.png"
+          alt="Beruang"
+          className="w-full h-full object-contain filter drop-shadow-[0_10px_15px_rgba(0,0,0,0.5)] transition-transform duration-300 group-hover:rotate-6"
+        />
+        <span className="absolute -top-6 left-1/2 -translate-x-1/2 bg-amber-900/90 border border-amber-500 text-yellow-300 text-[10px] sm:text-xs font-bold px-2 py-0.5 rounded-full opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap shadow-md pointer-events-none">
+          Beruang 🐻
+        </span>
+      </div>
+
+      {/* Right Animal: Kangguru */}
+      <div 
+        onClick={() => soundFx.play('pop')}
+        className="fixed right-1 xs:right-3 sm:right-6 md:right-10 lg:right-16 bottom-2 sm:bottom-6 z-10 w-20 xs:w-28 sm:w-40 md:w-48 lg:w-56 cursor-pointer group transition-transform duration-300 hover:scale-110 active:scale-95 animate-float pointer-events-auto"
+        style={{ animationDelay: '1.2s' }}
+        title="Halo! Ketuk aku!"
+      >
+        <img
+          src="/assets/Object/kangguru.png"
+          alt="Kangguru"
+          className="w-full h-full object-contain filter drop-shadow-[0_10px_15px_rgba(0,0,0,0.5)] transition-transform duration-300 group-hover:-rotate-6"
+        />
+        <span className="absolute -top-6 left-1/2 -translate-x-1/2 bg-amber-900/90 border border-amber-500 text-yellow-300 text-[10px] sm:text-xs font-bold px-2 py-0.5 rounded-full opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap shadow-md pointer-events-none">
+          Kangguru 🦘
+        </span>
+      </div>
+
+      {/* Top Left Animal Badge: Burung Beo */}
+      <div 
+        onClick={() => soundFx.play('pop')}
+        className="fixed left-2 sm:left-8 top-16 sm:top-20 z-10 w-14 xs:w-20 sm:w-28 cursor-pointer group transition-transform duration-300 hover:scale-110 active:scale-95 animate-playful hidden sm:block pointer-events-auto"
+        title="Burung Beo"
+      >
+        <img
+          src="/assets/Object/Burung_Beo.png"
+          alt="Burung Beo"
+          className="w-full h-full object-contain filter drop-shadow-lg transition-transform duration-300 group-hover:rotate-12"
+        />
+      </div>
+
+      {/* Top Right Animal Badge: Koala */}
+      <div 
+        onClick={() => soundFx.play('pop')}
+        className="fixed right-2 sm:right-8 top-16 sm:top-20 z-10 w-14 xs:w-20 sm:w-28 cursor-pointer group transition-transform duration-300 hover:scale-110 active:scale-95 animate-playful hidden sm:block pointer-events-auto"
+        style={{ animationDelay: '0.8s' }}
+        title="Koala"
+      >
+        <img
+          src="/assets/Object/Koala.png"
+          alt="Koala"
+          className="w-full h-full object-contain filter drop-shadow-lg transition-transform duration-300 group-hover:-rotate-12"
+        />
+      </div>
+
       {/* Top Utility Bar */}
       <div className="relative z-10 w-full max-w-5xl flex items-center justify-between gap-1 sm:gap-2">
         <div className="flex items-center gap-1 sm:gap-2 flex-wrap">

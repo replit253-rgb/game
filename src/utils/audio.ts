@@ -29,6 +29,7 @@ class AudioManager {
       // Sound mapping
       const soundUrls: Record<string, string> = {
         click: '/assets/_Sound/button.ogg',
+        pop: '/assets/_Sound/button.ogg',
         correct: '/assets/_Sound/correct.wav',
         guess_correct: '/assets/_Sound/guess_bener.ogg',
         wrong: '/assets/_Sound/wrong.mp3',
