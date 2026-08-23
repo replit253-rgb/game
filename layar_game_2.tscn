@@ -1,0 +1,268 @@
+[gd_scene format=3 uid="uid://buljy6uhqbo2p"]
+
+[ext_resource type="Script" uid="uid://cbhgl6r5v2n0c" path="res://layar_game.gd" id="1_gh24t"]
+[ext_resource type="Texture2D" uid="uid://cxcf3oenyyf2e" path="res://Asset Game Funiko/BG.png" id="2_q7pnt"]
+[ext_resource type="Texture2D" uid="uid://d0c0j740ubpx1" path="res://Asset Game Funiko/Darah.png" id="3_arfmr"]
+[ext_resource type="Texture2D" uid="uid://dc3wxyw6wv8b0" path="res://Asset Game Funiko/Object/Bebek.png" id="3_gh24t"]
+[ext_resource type="Texture2D" uid="uid://dehog474m8571" path="res://Asset Game Funiko/BarBawah.png" id="4_arfmr"]
+[ext_resource type="Script" uid="uid://cm3xy5m5ljx7i" path="res://tempat_drop.gd" id="5_t1pdr"]
+[ext_resource type="Texture2D" uid="uid://bfl4mn77ebrtu" path="res://Asset Game Funiko/Btn_.png" id="6_vl0u1"]
+[ext_resource type="Texture2D" uid="uid://3jipi1wdyppn" path="res://Asset Game Funiko/Object/Tikus.png" id="6_xa7jt"]
+[ext_resource type="Script" uid="uid://dekfvt6npyc2c" path="res://papan_nama.gd" id="7_jtgs4"]
+[ext_resource type="Texture2D" uid="uid://k1jcjt0qosad" path="res://Asset Game Funiko/Object/Babi.png" id="8_q7pnt"]
+[ext_resource type="Texture2D" uid="uid://dlafvwg0ioinu" path="res://Asset Game Funiko/Object/Ular.png" id="10_arfmr"]
+[ext_resource type="AudioStream" uid="uid://cqr7xfvm7pil2" path="res://Asset Game Funiko/_Sound/wrong.mp3" id="12_t1pdr"]
+[ext_resource type="AudioStream" uid="uid://cnv7qgmhi3o60" path="res://Asset Game Funiko/_Sound/correct.wav" id="12_vl0u1"]
+
+[sub_resource type="SystemFont" id="SystemFont_4kxuq"]
+font_weight = 800
+
+[sub_resource type="SystemFont" id="SystemFont_mti6b"]
+font_names = PackedStringArray("Arial")
+font_weight = 700
+
+[node name="LayarGame" type="Node2D" unique_id=473673377]
+script = ExtResource("1_gh24t")
+
+[node name="Background" type="TextureRect" parent="." unique_id=1082181345]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -64.0
+offset_top = -36.0
+offset_right = 1984.0
+offset_bottom = 1116.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_q7pnt")
+
+[node name="KontainerNyawa" type="HBoxContainer" parent="." unique_id=1626662282]
+unique_name_in_owner = true
+offset_right = 155.0
+offset_bottom = 44.0
+
+[node name="Hati1" type="TextureRect" parent="KontainerNyawa" unique_id=995431718]
+layout_mode = 2
+texture = ExtResource("3_arfmr")
+
+[node name="Hati2" type="TextureRect" parent="KontainerNyawa" unique_id=459976354]
+layout_mode = 2
+texture = ExtResource("3_arfmr")
+
+[node name="Hati3" type="TextureRect" parent="KontainerNyawa" unique_id=982148765]
+layout_mode = 2
+texture = ExtResource("3_arfmr")
+
+[node name="Object_Bebek" type="TextureRect" parent="." unique_id=776936749]
+offset_left = 349.0
+offset_top = 94.0
+offset_right = 749.0
+offset_bottom = 494.0
+texture = ExtResource("3_gh24t")
+expand_mode = 1
+stretch_mode = 6
+metadata/_edit_group_ = true
+
+[node name="BarBawah" type="TextureRect" parent="Object_Bebek" unique_id=63299353]
+layout_mode = 0
+offset_left = 16.0
+offset_top = 275.0
+offset_right = 391.0
+offset_bottom = 378.0
+texture = ExtResource("4_arfmr")
+stretch_mode = 6
+script = ExtResource("5_t1pdr")
+target_id = "bebek"
+
+[node name="Object_Tikus" type="TextureRect" parent="." unique_id=1497636820]
+offset_left = 1157.0
+offset_top = 98.0
+offset_right = 1557.0
+offset_bottom = 498.0
+texture = ExtResource("6_xa7jt")
+expand_mode = 1
+stretch_mode = 6
+metadata/_edit_group_ = true
+
+[node name="BarBawah" type="TextureRect" parent="Object_Tikus" unique_id=1443894124]
+layout_mode = 0
+offset_left = 16.0
+offset_top = 275.0
+offset_right = 391.0
+offset_bottom = 378.0
+texture = ExtResource("4_arfmr")
+stretch_mode = 6
+script = ExtResource("5_t1pdr")
+target_id = "tikus"
+
+[node name="Object_Babi" type="TextureRect" parent="." unique_id=1418256160]
+offset_left = 343.0
+offset_top = 449.0
+offset_right = 743.0
+offset_bottom = 849.0
+texture = ExtResource("8_q7pnt")
+expand_mode = 1
+stretch_mode = 6
+script = ExtResource("7_jtgs4")
+metadata/_edit_group_ = true
+
+[node name="BarBawah" type="TextureRect" parent="Object_Babi" unique_id=136872803]
+layout_mode = 0
+offset_left = 16.0
+offset_top = 275.0
+offset_right = 391.0
+offset_bottom = 378.0
+texture = ExtResource("4_arfmr")
+stretch_mode = 6
+script = ExtResource("5_t1pdr")
+target_id = "babi"
+
+[node name="Object_Ular" type="TextureRect" parent="." unique_id=894376570]
+offset_left = 1154.0
+offset_top = 437.0
+offset_right = 1554.0
+offset_bottom = 837.0
+texture = ExtResource("10_arfmr")
+expand_mode = 1
+stretch_mode = 6
+script = ExtResource("7_jtgs4")
+metadata/_edit_group_ = true
+
+[node name="BarBawah" type="TextureRect" parent="Object_Ular" unique_id=494664767]
+layout_mode = 0
+offset_left = 16.0
+offset_top = 275.0
+offset_right = 391.0
+offset_bottom = 378.0
+texture = ExtResource("4_arfmr")
+stretch_mode = 6
+script = ExtResource("5_t1pdr")
+target_id = "ular"
+
+[node name="Nama_Bebek" type="TextureRect" parent="." unique_id=32529075]
+offset_left = 584.0
+offset_top = 884.0
+offset_right = 959.0
+offset_bottom = 979.0
+mouse_filter = 0
+texture = ExtResource("6_vl0u1")
+expand_mode = 1
+stretch_mode = 6
+script = ExtResource("7_jtgs4")
+nama_id = "bebek"
+metadata/_edit_group_ = true
+
+[node name="Label_NamaBebek" type="Label" parent="Nama_Bebek" unique_id=1604306714]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_bottom = -10.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/outline_size = 3
+theme_override_fonts/font = SubResource("SystemFont_4kxuq")
+theme_override_font_sizes/font_size = 45
+text = "Bebek"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Nama_Tikus" type="TextureRect" parent="." unique_id=411084461]
+offset_left = 1000.0
+offset_top = 885.0
+offset_right = 1375.0
+offset_bottom = 980.0
+mouse_filter = 0
+texture = ExtResource("6_vl0u1")
+expand_mode = 1
+stretch_mode = 6
+script = ExtResource("7_jtgs4")
+nama_id = "tikus"
+metadata/_edit_group_ = true
+
+[node name="Label_NamaTikus" type="Label" parent="Nama_Tikus" unique_id=374328064]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_bottom = -10.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/outline_size = 3
+theme_override_fonts/font = SubResource("SystemFont_4kxuq")
+theme_override_font_sizes/font_size = 45
+text = "Tikus"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Nama_Babi" type="TextureRect" parent="." unique_id=1889208271]
+offset_left = 166.0
+offset_top = 885.0
+offset_right = 541.0
+offset_bottom = 980.0
+mouse_filter = 0
+texture = ExtResource("6_vl0u1")
+expand_mode = 1
+stretch_mode = 6
+script = ExtResource("7_jtgs4")
+nama_id = "babi"
+metadata/_edit_group_ = true
+
+[node name="Label_NamaBabi" type="Label" parent="Nama_Babi" unique_id=1820993239]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_bottom = -9.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/outline_size = 3
+theme_override_fonts/font = SubResource("SystemFont_mti6b")
+theme_override_font_sizes/font_size = 45
+text = "Babi"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Nama_Ular" type="TextureRect" parent="." unique_id=865879450]
+offset_left = 1407.0
+offset_top = 889.0
+offset_right = 1782.0
+offset_bottom = 984.0
+mouse_filter = 0
+texture = ExtResource("6_vl0u1")
+expand_mode = 1
+stretch_mode = 6
+script = ExtResource("7_jtgs4")
+nama_id = "ular"
+metadata/_edit_group_ = true
+
+[node name="Label_NamaUlar" type="Label" parent="Nama_Ular" unique_id=1274562384]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_bottom = -9.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/outline_size = 3
+theme_override_fonts/font = SubResource("SystemFont_mti6b")
+theme_override_font_sizes/font_size = 45
+text = "Ular"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Node2D" type="Control" parent="." unique_id=686354506]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="SuaraBenar" type="AudioStreamPlayer" parent="." unique_id=142403981]
+unique_name_in_owner = true
+stream = ExtResource("12_vl0u1")
+
+[node name="SuaraSalah" type="AudioStreamPlayer" parent="." unique_id=1872865099]
+unique_name_in_owner = true
+stream = ExtResource("12_t1pdr")

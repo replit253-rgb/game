@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://c8udbb48ft3pm"
+path="res://.godot/imported/guess_bener.ogg-ea07f7dcbbcd50def1c88533e65ac658.oggvorbisstr"
+
+[deps]
+
+source_file="res://Asset Game Funiko/_Sound/guess_bener.ogg"
+dest_files=["res://.godot/imported/guess_bener.ogg-ea07f7dcbbcd50def1c88533e65ac658.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4
