@@ -1,2 +1,32 @@
-# Normalize EOL for all files that Git considers text files.
+# Set default behavior to automatic text normalization (for text files only)
 * text=auto eol=lf
+
+# Explicitly mark all binary image files as binary to prevent Git CRLF/LF line-ending conversion corruption
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.webp binary
+*.ico binary
+*.bmp binary
+*.tiff binary
+*.svg text eol=lf
+
+# Explicitly mark audio & video media files as binary
+*.ogg binary
+*.mp3 binary
+*.wav binary
+*.aac binary
+*.flac binary
+*.mp4 binary
+*.webm binary
+
+# Explicitly mark font & archive files as binary
+*.ttf binary
+*.otf binary
+*.woff binary
+*.woff2 binary
+*.eot binary
+*.zip binary
+*.tar binary
+*.gz binary
