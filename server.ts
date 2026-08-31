@@ -31,6 +31,18 @@ async function startServer() {
   app.use(express.json());
   app.use(cookieParser());
 
+  // CORS & Preflight handling
+  app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Origin', req.headers.origin || '*');
+    res.header('Access-Control-Allow-Credentials', 'true');
+    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE, OPTIONS');
+    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+    if (req.method === 'OPTIONS') {
+      return res.sendStatus(204);
+    }
+    next();
+  });
+
   // Background check database
   checkDatabaseConnection().then((status) => {
     console.log(`[DB] Connection Status: ${status.connected ? 'OK (PostgreSQL)' : 'STANDALONE MODE'} - ${status.message}`);
@@ -411,10 +423,15 @@ async function startServer() {
   } else {
     const distPath = path.join(process.cwd(), 'dist');
     app.use(express.static(distPath));
-    app.get('*', (req, res) => {
+    app.get('*all', (req, res) => {
       res.sendFile(path.join(distPath, 'index.html'));
     });
   }
+
+  // Fallback 404 for API requests
+  app.all('/api/*all', (req, res) => {
+    res.status(404).json({ error: `API endpoint tidak ditemukan: ${req.method} ${req.originalUrl}` });
+  });
 
   app.listen(PORT, '0.0.0.0', () => {
     console.log(`Funiko Game Server running at http://localhost:${PORT}`);
