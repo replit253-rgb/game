@@ -1,15 +1,26 @@
-import { useState, useEffect } from 'react';
-import { GameScreen as GameScreenType } from './types';
+import { useState, useEffect, useCallback } from 'react';
+import { GameScreen as GameScreenType, UserProfile } from './types';
 import { MainMenu } from './components/MainMenu';
 import { LevelSelect } from './components/LevelSelect';
 import { GameScreen } from './components/GameScreen';
 import { RewardModal } from './components/RewardModal';
-import { resetRewardData } from './utils/rewardStorage';
+import { AuthModal } from './components/AuthModal';
+import { ProfileModal } from './components/ProfileModal';
+import { AdminDashboard } from './components/AdminDashboard';
+import { resetRewardData, getRewardData, saveRewardData } from './utils/rewardStorage';
+import { api } from './utils/api';
 
 export function App() {
   const [currentScreen, setCurrentScreen] = useState<GameScreenType>('main_menu');
   const [currentLevel, setCurrentLevel] = useState<number>(1);
   const [isRandomMode, setIsRandomMode] = useState<boolean>(false);
+
+  // User Auth & Profile State
+  const [currentUser, setCurrentUser] = useState<UserProfile | null>(null);
+  const [showAuthModal, setShowAuthModal] = useState<boolean>(false);
+  const [authInitialTab, setAuthInitialTab] = useState<'login' | 'register'>('login');
+  const [authModalMessage, setAuthModalMessage] = useState<string | undefined>(undefined);
+  const [showProfileModal, setShowProfileModal] = useState<boolean>(false);
 
   // Reward Modal States
   const [showRewardsModal, setShowRewardsModal] = useState<boolean>(false);
@@ -24,6 +35,46 @@ export function App() {
     }
   });
 
+  // Sync Progress with server
+  const syncWithServer = useCallback(async () => {
+    try {
+      const progress = await api.getProgress();
+      if (progress) {
+        if (progress.completedLevels && Object.keys(progress.completedLevels).length > 0) {
+          setCompletedLevels((prev) => {
+            const merged = { ...prev, ...progress.completedLevels };
+            try {
+              localStorage.setItem('funiko_completed_levels', JSON.stringify(merged));
+            } catch {}
+            return merged;
+          });
+        }
+        if (progress.rewards) {
+          const localRewards = getRewardData();
+          saveRewardData({
+            ...localRewards,
+            coins: progress.coins ?? localRewards.coins,
+            openedChests: { ...localRewards.openedChests, ...progress.rewards.openedChests },
+            unlockedCards: Array.from(new Set([...localRewards.unlockedCards, ...(progress.rewards.unlockedCards || [])])),
+            claimedBadges: Array.from(new Set([...localRewards.claimedBadges, ...(progress.rewards.claimedBadges || [])])),
+          });
+        }
+      }
+    } catch (err) {
+      console.warn('Sync with server skipped:', err);
+    }
+  }, []);
+
+  // Check current session on startup
+  useEffect(() => {
+    api.getMe().then((user) => {
+      if (user) {
+        setCurrentUser(user);
+        syncWithServer();
+      }
+    });
+  }, [syncWithServer]);
+
   const handleSaveLevelCompletion = (level: number, stars: number) => {
     setCompletedLevels((prev) => {
       const existing = prev[level] || 0;
@@ -33,6 +84,10 @@ export function App() {
           localStorage.setItem('funiko_completed_levels', JSON.stringify(updated));
         } catch {
           // localStorage error ignore
+        }
+        // Save to backend if user is logged in
+        if (currentUser) {
+          api.saveLevelProgress(level, stars, stars * 100);
         }
         return updated;
       }
@@ -48,6 +103,22 @@ export function App() {
     } catch {
       // ignore
     }
+    if (currentUser) {
+      api.resetUserProgress();
+    }
+  };
+
+  const handleAuthSuccess = (user: UserProfile) => {
+    setCurrentUser(user);
+    syncWithServer();
+  };
+
+  const handleLogout = async () => {
+    await api.logout();
+    setCurrentUser(null);
+    if (currentScreen === 'admin_dashboard') {
+      setCurrentScreen('main_menu');
+    }
   };
 
   const handleOpenRewards = (levelToOpen?: number) => {
@@ -56,12 +127,25 @@ export function App() {
   };
 
   const handleStartQuickPlay = () => {
+    if (!currentUser) {
+      setAuthModalMessage('Silakan masuk akun terlebih dahulu untuk memulai permainan!');
+      setAuthInitialTab('login');
+      setShowAuthModal(true);
+      return;
+    }
     setCurrentLevel(1);
     setIsRandomMode(false);
     setCurrentScreen('game');
   };
 
   const handleSelectLevel = (levelNumber: number, randomMode: boolean = false) => {
+    if (!currentUser) {
+      setAuthModalMessage('Silakan masuk akun terlebih dahulu untuk memilih level petualangan!');
+      setAuthInitialTab('login');
+      setShowAuthModal(true);
+      return;
+    }
+
     if (randomMode) {
       setCurrentLevel(1);
       setIsRandomMode(true);
@@ -102,10 +186,27 @@ export function App() {
       {currentScreen === 'main_menu' && (
         <MainMenu
           onStartGame={handleStartQuickPlay}
-          onOpenLevelSelect={() => setCurrentScreen('level_select')}
+          onOpenLevelSelect={() => {
+            if (!currentUser) {
+              setAuthModalMessage('Silakan masuk akun terlebih dahulu untuk memulai petualangan!');
+              setAuthInitialTab('login');
+              setShowAuthModal(true);
+              return;
+            }
+            setCurrentScreen('level_select');
+          }}
           onResetProgress={handleResetProgress}
           onOpenRewards={() => handleOpenRewards()}
+          onOpenProfile={() => setShowProfileModal(true)}
           completedLevels={completedLevels}
+          currentUser={currentUser}
+          onOpenAuth={(tab, message) => {
+            setAuthInitialTab(tab || 'login');
+            setAuthModalMessage(message);
+            setShowAuthModal(true);
+          }}
+          onLogout={handleLogout}
+          onOpenAdmin={() => setCurrentScreen('admin_dashboard')}
         />
       )}
 
@@ -128,6 +229,15 @@ export function App() {
         />
       )}
 
+      {/* Admin Dashboard Screen */}
+      {currentScreen === 'admin_dashboard' && currentUser?.role === 'admin' && (
+        <AdminDashboard
+          currentUser={currentUser}
+          onBackToGame={() => setCurrentScreen('main_menu')}
+          onRefreshUserData={syncWithServer}
+        />
+      )}
+
       {/* Global Reward System Modal */}
       {showRewardsModal && (
         <RewardModal
@@ -135,13 +245,50 @@ export function App() {
           onClose={() => {
             setShowRewardsModal(false);
             setAutoOpenChestLevel(undefined);
+            if (currentUser) {
+              api.saveRewardData(getRewardData());
+            }
           }}
           autoOpenLevelChest={autoOpenChestLevel}
         />
       )}
+
+      {/* Profile Modal */}
+      {showProfileModal && (
+        <ProfileModal
+          currentUser={currentUser}
+          completedLevels={completedLevels}
+          rewards={getRewardData()}
+          onClose={() => setShowProfileModal(false)}
+          onUpdateUser={(updatedUser) => {
+            setCurrentUser(updatedUser);
+          }}
+          onLogout={handleLogout}
+          onOpenAuth={(tab) => {
+            setAuthInitialTab(tab);
+            setAuthModalMessage(undefined);
+            setShowAuthModal(true);
+          }}
+          onOpenAdmin={() => {
+            setShowProfileModal(false);
+            setCurrentScreen('admin_dashboard');
+          }}
+        />
+      )}
+
+      {/* Authentication Modal */}
+      <AuthModal
+        isOpen={showAuthModal}
+        initialTab={authInitialTab}
+        message={authModalMessage}
+        onClose={() => {
+          setShowAuthModal(false);
+          setAuthModalMessage(undefined);
+        }}
+        onSuccess={handleAuthSuccess}
+      />
     </main>
   );
 }
 
 export default App;
-

@@ -74,20 +74,20 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
   const totalStars = Object.values(completedLevels).reduce((acc, curr) => acc + curr, 0);
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-3 sm:p-4 animate-fade-in">
-      <div className="relative w-full max-w-2xl max-h-[90vh] bg-amber-950 border-4 border-amber-600 rounded-3xl shadow-2xl flex flex-col overflow-hidden">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-1.5 xs:p-3 sm:p-4 animate-fade-in">
+      <div className="relative w-full max-w-2xl max-h-[92vh] bg-amber-950 border-4 border-amber-600 rounded-3xl shadow-2xl flex flex-col overflow-hidden my-auto">
         {/* Header */}
-        <div className="relative flex items-center justify-between px-6 py-4 border-b-2 border-amber-800 bg-amber-900/80">
+        <div className="relative flex items-center justify-between px-3.5 xs:px-6 py-3 xs:py-4 border-b-2 border-amber-800 bg-amber-900/80 gap-2">
           <h2
-            className="text-2xl sm:text-3xl font-extrabold text-amber-300 tracking-widest flex items-center gap-2"
+            className="text-lg xs:text-2xl sm:text-3xl font-extrabold text-amber-300 tracking-widest flex items-center gap-1.5 xs:gap-2 truncate"
             style={{
               textShadow: '0 2px 4px rgba(0,0,0,0.8)',
               WebkitTextStroke: '0.5px #78350f',
               letterSpacing: '0.1em',
             }}
           >
-            <Sliders className="w-7 h-7 text-amber-400" />
-            <span>PENGATURAN GAME</span>
+            <Sliders className="w-5 h-5 xs:w-7 xs:h-7 text-amber-400 shrink-0" />
+            <span className="truncate">PENGATURAN GAME</span>
           </h2>
           <button
             id="settings-close-btn"
@@ -95,7 +95,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
               soundFx.play('click');
               onClose();
             }}
-            className="w-10 h-10 rounded-full bg-red-600 hover:bg-red-500 text-white font-bold text-xl flex items-center justify-center shadow-lg transition-transform active:scale-90"
+            className="w-8 h-8 xs:w-10 xs:h-10 rounded-full bg-red-600 hover:bg-red-500 text-white font-bold text-base xs:text-xl flex items-center justify-center shadow-lg transition-transform active:scale-90 shrink-0 min-w-[32px] min-h-[32px]"
           >
             ✕
           </button>
@@ -106,40 +106,40 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
           <button
             id="settings-tab-audio"
             onClick={() => handleTabChange('audio')}
-            className={`flex-1 py-3 px-2 text-xs sm:text-sm font-bold flex items-center justify-center gap-1.5 transition-colors ${
+            className={`flex-1 py-2.5 xs:py-3 px-1 xs:px-2 text-[11px] xs:text-xs sm:text-sm font-bold flex items-center justify-center gap-1 xs:gap-1.5 transition-colors ${
               activeTab === 'audio'
                 ? 'bg-amber-800/90 text-amber-300 border-b-4 border-amber-400'
                 : 'text-amber-200/70 hover:bg-amber-900/40 hover:text-amber-100'
             }`}
           >
-            <Volume2 className="w-4 h-4" />
-            <span>Suara & Audio</span>
+            <Volume2 className="w-3.5 h-3.5 xs:w-4 xs:h-4 shrink-0" />
+            <span className="truncate">Suara & Audio</span>
           </button>
 
           <button
             id="settings-tab-guide"
             onClick={() => handleTabChange('guide')}
-            className={`flex-1 py-3 px-2 text-xs sm:text-sm font-bold flex items-center justify-center gap-1.5 transition-colors ${
+            className={`flex-1 py-2.5 xs:py-3 px-1 xs:px-2 text-[11px] xs:text-xs sm:text-sm font-bold flex items-center justify-center gap-1 xs:gap-1.5 transition-colors ${
               activeTab === 'guide'
                 ? 'bg-amber-800/90 text-amber-300 border-b-4 border-amber-400'
                 : 'text-amber-200/70 hover:bg-amber-900/40 hover:text-amber-100'
             }`}
           >
-            <BookOpen className="w-4 h-4" />
-            <span>Petunjuk Main</span>
+            <BookOpen className="w-3.5 h-3.5 xs:w-4 xs:h-4 shrink-0" />
+            <span className="truncate">Petunjuk Main</span>
           </button>
 
           <button
             id="settings-tab-data"
             onClick={() => handleTabChange('data')}
-            className={`flex-1 py-3 px-2 text-xs sm:text-sm font-bold flex items-center justify-center gap-1.5 transition-colors ${
+            className={`flex-1 py-2.5 xs:py-3 px-1 xs:px-2 text-[11px] xs:text-xs sm:text-sm font-bold flex items-center justify-center gap-1 xs:gap-1.5 transition-colors ${
               activeTab === 'data'
                 ? 'bg-amber-800/90 text-amber-300 border-b-4 border-amber-400'
                 : 'text-amber-200/70 hover:bg-amber-900/40 hover:text-amber-100'
             }`}
           >
-            <RefreshCw className="w-4 h-4" />
-            <span>Data Progres</span>
+            <RefreshCw className="w-3.5 h-3.5 xs:w-4 xs:h-4 shrink-0" />
+            <span className="truncate">Data Progres</span>
           </button>
         </div>
 

@@ -1,16 +1,22 @@
 import React, { useState } from 'react';
 import { soundFx } from '../utils/audio';
-import { Volume2, VolumeX, BookOpen, HelpCircle, Sliders, Coins } from 'lucide-react';
+import { Volume2, VolumeX, BookOpen, HelpCircle, Sliders, Coins, LogIn, LogOut, ShieldCheck } from 'lucide-react';
 import { EncyclopediaModal } from './EncyclopediaModal';
 import { SettingsModal } from './SettingsModal';
 import { getRewardData } from '../utils/rewardStorage';
+import { UserProfile } from '../types';
 
 interface MainMenuProps {
   onStartGame: () => void;
   onOpenLevelSelect: () => void;
   onResetProgress: () => void;
   onOpenRewards: () => void;
+  onOpenProfile: () => void;
   completedLevels: Record<number, number>;
+  currentUser: UserProfile | null;
+  onOpenAuth: (tab?: 'login' | 'register', message?: string) => void;
+  onLogout: () => void;
+  onOpenAdmin: () => void;
 }
 
 export const MainMenu: React.FC<MainMenuProps> = ({
@@ -18,7 +24,12 @@ export const MainMenu: React.FC<MainMenuProps> = ({
   onOpenLevelSelect,
   onResetProgress,
   onOpenRewards,
+  onOpenProfile,
   completedLevels,
+  currentUser,
+  onOpenAuth,
+  onLogout,
+  onOpenAdmin,
 }) => {
   const [isMuted, setIsMuted] = useState(soundFx.getMuted());
   const [showEncyclopedia, setShowEncyclopedia] = useState(false);
@@ -37,11 +48,19 @@ export const MainMenu: React.FC<MainMenuProps> = ({
 
   const handleStart = () => {
     soundFx.play('click');
+    if (!currentUser) {
+      onOpenAuth('login', 'Silakan masuk akun terlebih dahulu untuk memulai petualangan!');
+      return;
+    }
     onOpenLevelSelect();
   };
 
   const handleQuickPlay = () => {
     soundFx.play('click');
+    if (!currentUser) {
+      onOpenAuth('login', 'Silakan masuk akun terlebih dahulu untuk bermain!');
+      return;
+    }
     onStartGame();
   };
 
@@ -63,7 +82,7 @@ export const MainMenu: React.FC<MainMenuProps> = ({
       {/* Left Animal: Beruang */}
       <div 
         onClick={() => soundFx.play('pop')}
-        className="fixed left-1 xs:left-3 sm:left-6 md:left-10 lg:left-16 bottom-2 sm:bottom-6 z-10 w-20 xs:w-28 sm:w-40 md:w-48 lg:w-56 cursor-pointer group transition-transform duration-300 hover:scale-110 active:scale-95 animate-float pointer-events-auto"
+        className="fixed left-1 xs:left-3 sm:left-6 md:left-10 lg:left-16 bottom-2 sm:bottom-6 z-10 w-16 xs:w-24 sm:w-40 md:w-48 lg:w-56 cursor-pointer group transition-transform duration-300 hover:scale-110 active:scale-95 animate-float pointer-events-auto select-none"
         title="Halo! Ketuk aku!"
       >
         <img
@@ -79,7 +98,7 @@ export const MainMenu: React.FC<MainMenuProps> = ({
       {/* Right Animal: Kangguru */}
       <div 
         onClick={() => soundFx.play('pop')}
-        className="fixed right-1 xs:right-3 sm:right-6 md:right-10 lg:right-16 bottom-2 sm:bottom-6 z-10 w-20 xs:w-28 sm:w-40 md:w-48 lg:w-56 cursor-pointer group transition-transform duration-300 hover:scale-110 active:scale-95 animate-float pointer-events-auto"
+        className="fixed right-1 xs:right-3 sm:right-6 md:right-10 lg:right-16 bottom-2 sm:bottom-6 z-10 w-16 xs:w-24 sm:w-40 md:w-48 lg:w-56 cursor-pointer group transition-transform duration-300 hover:scale-110 active:scale-95 animate-float pointer-events-auto select-none"
         style={{ animationDelay: '1.2s' }}
         title="Halo! Ketuk aku!"
       >
@@ -96,7 +115,7 @@ export const MainMenu: React.FC<MainMenuProps> = ({
       {/* Top Left Animal Badge: Burung Beo */}
       <div 
         onClick={() => soundFx.play('pop')}
-        className="fixed left-2 sm:left-8 top-16 sm:top-20 z-10 w-14 xs:w-20 sm:w-28 cursor-pointer group transition-transform duration-300 hover:scale-110 active:scale-95 animate-playful hidden sm:block pointer-events-auto"
+        className="fixed left-2 sm:left-8 top-16 sm:top-20 z-10 w-12 xs:w-16 sm:w-28 cursor-pointer group transition-transform duration-300 hover:scale-110 active:scale-95 animate-playful hidden sm:block pointer-events-auto"
         title="Burung Beo"
       >
         <img
@@ -109,7 +128,7 @@ export const MainMenu: React.FC<MainMenuProps> = ({
       {/* Top Right Animal Badge: Koala */}
       <div 
         onClick={() => soundFx.play('pop')}
-        className="fixed right-2 sm:right-8 top-16 sm:top-20 z-10 w-14 xs:w-20 sm:w-28 cursor-pointer group transition-transform duration-300 hover:scale-110 active:scale-95 animate-playful hidden sm:block pointer-events-auto"
+        className="fixed right-2 sm:right-8 top-16 sm:top-20 z-10 w-12 xs:w-16 sm:w-28 cursor-pointer group transition-transform duration-300 hover:scale-110 active:scale-95 animate-playful hidden sm:block pointer-events-auto"
         style={{ animationDelay: '0.8s' }}
         title="Koala"
       >
@@ -121,26 +140,27 @@ export const MainMenu: React.FC<MainMenuProps> = ({
       </div>
 
       {/* Top Utility Bar */}
-      <div className="relative z-10 w-full max-w-5xl flex items-center justify-between gap-1 sm:gap-2">
+      <div className="relative z-10 w-full max-w-5xl flex items-center justify-between gap-1.5 sm:gap-2 flex-wrap mb-1">
+        {/* Left Action Buttons */}
         <div className="flex items-center gap-1 sm:gap-2 flex-wrap">
           {/* Audio Mute Toggle */}
           <button
             id="menu-sound-toggle-btn"
             onClick={toggleSound}
-            className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-amber-900/80 hover:bg-amber-800 border-2 border-amber-500 text-amber-200 flex items-center justify-center shadow-lg transition-transform active:scale-90 min-w-[40px] min-h-[40px]"
+            className="w-9 h-9 xs:w-10 xs:h-10 sm:w-11 sm:h-11 rounded-2xl bg-amber-900/80 hover:bg-amber-800 border-2 border-amber-500 text-amber-200 flex items-center justify-center shadow-lg transition-transform active:scale-90 min-w-[36px] min-h-[36px]"
             title={isMuted ? 'Nyalakan Suara' : 'Matikan Suara'}
           >
-            {isMuted ? <VolumeX className="w-5 h-5 sm:w-6 sm:h-6 text-red-400" /> : <Volume2 className="w-5 h-5 sm:w-6 sm:h-6" />}
+            {isMuted ? <VolumeX className="w-4 h-4 xs:w-5 xs:h-5 text-red-400" /> : <Volume2 className="w-4 h-4 xs:w-5 xs:h-5" />}
           </button>
 
           {/* Settings Top Icon Button */}
           <button
             id="menu-settings-top-btn"
             onClick={handleOpenSettings}
-            className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-amber-900/80 hover:bg-amber-800 border-2 border-amber-500 text-amber-200 flex items-center justify-center shadow-lg transition-transform active:scale-90 min-w-[40px] min-h-[40px]"
+            className="w-9 h-9 xs:w-10 xs:h-10 sm:w-11 sm:h-11 rounded-2xl bg-amber-900/80 hover:bg-amber-800 border-2 border-amber-500 text-amber-200 flex items-center justify-center shadow-lg transition-transform active:scale-90 min-w-[36px] min-h-[36px]"
             title="Pengaturan Game"
           >
-            <Sliders className="w-5 h-5 sm:w-6 sm:h-6" />
+            <Sliders className="w-4 h-4 xs:w-5 xs:h-5" />
           </button>
 
           {/* Galeri Satwa */}
@@ -150,9 +170,9 @@ export const MainMenu: React.FC<MainMenuProps> = ({
               soundFx.play('click');
               setShowEncyclopedia(true);
             }}
-            className="h-10 sm:h-12 px-2.5 sm:px-4 rounded-2xl bg-amber-900/80 hover:bg-amber-800 border-2 border-amber-500 text-amber-200 flex items-center gap-1.5 shadow-lg transition-transform active:scale-90 font-bold text-xs sm:text-base min-h-[40px]"
+            className="h-9 xs:h-10 sm:h-11 px-2 xs:px-2.5 sm:px-3 rounded-2xl bg-amber-900/80 hover:bg-amber-800 border-2 border-amber-500 text-amber-200 flex items-center gap-1.5 shadow-lg transition-transform active:scale-90 font-bold text-xs sm:text-sm min-h-[36px]"
           >
-            <BookOpen className="w-4 h-4 sm:w-5 sm:h-5" />
+            <BookOpen className="w-3.5 h-3.5 xs:w-4 xs:h-4" />
             <span className="hidden xs:inline">Galeri</span>
           </button>
 
@@ -163,26 +183,90 @@ export const MainMenu: React.FC<MainMenuProps> = ({
               soundFx.play('click');
               onOpenRewards();
             }}
-            className="h-10 sm:h-12 px-2 sm:px-3.5 rounded-2xl bg-amber-900/90 hover:bg-amber-800 border-2 border-yellow-400 text-yellow-300 flex items-center gap-1 shadow-lg transition-transform active:scale-90 font-bold text-xs sm:text-base min-h-[40px]"
+            className="h-9 xs:h-10 sm:h-11 px-2 xs:px-2.5 sm:px-3 rounded-2xl bg-amber-900/90 hover:bg-amber-800 border-2 border-yellow-400 text-yellow-300 flex items-center gap-1 shadow-lg transition-transform active:scale-90 font-bold text-xs sm:text-sm min-h-[36px]"
             title="Menu Reward & Koin"
           >
-            <Coins className="w-4 h-4 sm:w-5 sm:h-5 text-yellow-400" />
-            <span>{rewardData.coins}</span>
+            <Coins className="w-3.5 h-3.5 xs:w-4 xs:h-4 text-yellow-400" />
+            <span>{currentUser ? currentUser.coins : rewardData.coins}</span>
           </button>
         </div>
 
-        {/* Bantuan / How To Play */}
-        <button
-          id="menu-howtoplay-btn"
-          onClick={() => {
-            soundFx.play('click');
-            setShowHowToPlay(true);
-          }}
-          className="h-10 sm:h-12 px-2.5 sm:px-4 rounded-2xl bg-amber-900/80 hover:bg-amber-800 border-2 border-amber-500 text-amber-200 flex items-center gap-1 sm:gap-2 shadow-lg transition-transform active:scale-90 font-bold text-xs sm:text-base min-h-[40px]"
-        >
-          <HelpCircle className="w-4 h-4 sm:w-5 sm:h-5" />
-          <span className="hidden xs:inline">Bantuan</span>
-        </button>
+        {/* Right Auth / Admin / Help Buttons */}
+        <div className="flex items-center gap-1 xs:gap-1.5 sm:gap-2 flex-wrap">
+          {currentUser ? (
+            <div className="flex items-center gap-1 xs:gap-1.5 flex-wrap">
+              {/* Admin Dashboard shortcut if role is admin */}
+              {currentUser.role === 'admin' && (
+                <button
+                  id="menu-admin-dashboard-btn"
+                  onClick={() => {
+                    soundFx.play('click');
+                    onOpenAdmin();
+                  }}
+                  className="h-9 xs:h-10 sm:h-11 px-2.5 xs:px-3 rounded-2xl bg-gradient-to-r from-amber-600 to-yellow-600 hover:from-amber-500 hover:to-yellow-500 border-2 border-yellow-300 text-white font-extrabold text-xs sm:text-sm flex items-center gap-1 xs:gap-1.5 shadow-lg transition-transform active:scale-95 animate-cta-pulse cursor-pointer min-h-[36px]"
+                  title="Buka Admin Dashboard"
+                >
+                  <ShieldCheck className="w-3.5 h-3.5 xs:w-4 xs:h-4 text-yellow-200" />
+                  <span className="hidden xs:inline">Admin</span>
+                  <span className="xs:hidden">Adm</span>
+                </button>
+              )}
+
+              {/* User Profile Pill - Clickable to open Profile */}
+              <button
+                id="menu-user-profile-pill"
+                onClick={() => {
+                  soundFx.play('click');
+                  onOpenProfile();
+                }}
+                className="h-9 xs:h-10 sm:h-11 px-2 xs:px-2.5 sm:px-3 rounded-2xl bg-amber-950/90 hover:bg-amber-900 border-2 border-amber-500 hover:border-yellow-400 text-amber-200 flex items-center gap-1 xs:gap-1.5 text-xs sm:text-sm font-bold shadow-md cursor-pointer transition-transform active:scale-95 min-h-[36px]"
+                title="Buka Profil Pemain"
+              >
+                <span className="text-sm xs:text-base">{currentUser.avatar}</span>
+                <span className="max-w-[65px] xs:max-w-[85px] sm:max-w-[110px] truncate">{currentUser.username}</span>
+              </button>
+
+              {/* Logout Button */}
+              <button
+                id="menu-logout-btn"
+                onClick={() => {
+                  soundFx.play('click');
+                  onLogout();
+                }}
+                className="w-9 h-9 xs:w-10 xs:h-10 sm:w-11 sm:h-11 rounded-2xl bg-red-950/80 hover:bg-red-900 border-2 border-red-500 text-red-300 flex items-center justify-center shadow-lg transition-transform active:scale-90 min-w-[36px] min-h-[36px]"
+                title="Keluar (Logout)"
+              >
+                <LogOut className="w-3.5 h-3.5 xs:w-4 xs:h-4" />
+              </button>
+            </div>
+          ) : (
+            <button
+              id="menu-login-btn"
+              onClick={() => {
+                soundFx.play('click');
+                onOpenAuth('login');
+              }}
+              className="h-9 xs:h-10 sm:h-11 px-2.5 xs:px-3 sm:px-4 rounded-2xl bg-gradient-to-r from-amber-600 to-amber-500 hover:from-amber-500 hover:to-amber-400 border-2 border-yellow-400 text-white font-extrabold text-xs sm:text-sm flex items-center gap-1.5 shadow-lg transition-transform active:scale-95 cursor-pointer min-h-[36px]"
+            >
+              <LogIn className="w-3.5 h-3.5 xs:w-4 xs:h-4" />
+              <span>Masuk</span>
+            </button>
+          )}
+
+          {/* Bantuan / How To Play */}
+          <button
+            id="menu-howtoplay-btn"
+            onClick={() => {
+              soundFx.play('click');
+              setShowHowToPlay(true);
+            }}
+            className="h-9 xs:h-10 sm:h-11 px-2 xs:px-2.5 sm:px-3 rounded-2xl bg-amber-900/80 hover:bg-amber-800 border-2 border-amber-500 text-amber-200 flex items-center gap-1 shadow-lg transition-transform active:scale-90 font-bold text-xs sm:text-sm min-h-[36px]"
+            title="Cara Bermain"
+          >
+            <HelpCircle className="w-3.5 h-3.5 xs:w-4 xs:h-4" />
+            <span className="hidden xs:inline">Bantuan</span>
+          </button>
+        </div>
       </div>
 
       {/* Center Logo and Play Buttons */}
@@ -271,6 +355,32 @@ export const MainMenu: React.FC<MainMenuProps> = ({
               }}
             >
               REWARD & PETI
+            </span>
+          </button>
+
+          {/* PROFIL PEMAIN BUTTON */}
+          <button
+            id="menu-profile-main-btn"
+            onClick={() => {
+              soundFx.play('click');
+              onOpenProfile();
+            }}
+            className="relative w-full h-[46px] xs:h-[52px] sm:h-[62px] flex items-center justify-center transition-all duration-200 hover:scale-105 active:scale-95 touch-manipulation"
+          >
+            <img
+              src="/assets/Btn_.png"
+              alt="Profil Pemain"
+              className="absolute inset-0 w-full h-full object-contain filter drop-shadow-lg"
+            />
+            <span
+              className="relative z-10 text-amber-100 text-base xs:text-lg sm:text-xl font-extrabold tracking-widest flex items-center gap-1.5"
+              style={{
+                textShadow: '0 2px 4px rgba(0,0,0,0.8)',
+                WebkitTextStroke: '0.5px #451a03',
+                letterSpacing: '0.1em',
+              }}
+            >
+              PROFIL PEMAIN
             </span>
           </button>
 
